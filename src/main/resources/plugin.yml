@@ -1,0 +1,16 @@
+name: VTrap
+version: '${project.version}'
+main: ua.tox8729.vtrap.VTrap
+api-version: '1.16'
+author: [ Tox_8729 ]
+depend:
+  - WorldEdit
+  - WorldGuard
+
+commands:
+  vtrap:
+    permission: vtrap.use
+
+permissions:
+  vtrap.use:
+    default: op
