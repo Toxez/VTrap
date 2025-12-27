@@ -1,5 +1,5 @@
 name: VTrap
-version: '${project.version}'
+version: '1.1'
 main: ua.vdev.vtrap.VTrap
 api-version: '1.16'
 author: [ Tox_8729 ]
