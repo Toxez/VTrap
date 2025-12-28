@@ -26,10 +26,10 @@ public class TrapRegionManager {
     private final Map<UUID, ProtectedCuboidRegion> activeTrapRegions = new HashMap<>();
     private final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 
-    public boolean createRegion(Location location, String trapId) {
+    public ProtectedCuboidRegion createRegion(Location location, String trapId) {
         String schematicName = VTrap.instance.getConfig().getString("traps." + trapId + ".schematic");
         int[] dims = new SchematicUtil(0).getSchematicDimensions(schematicName);
-        if (dims == null) return false;
+        if (dims == null) return null;
 
         int width = dims[0], height = dims[1], length = dims[2];
         int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
@@ -42,14 +42,14 @@ public class TrapRegionManager {
 
         if (activeTrapRegions.values().stream()
                 .anyMatch(r -> !region.getIntersectingRegions(List.of(r)).isEmpty())) {
-            return false;
+            return null;
         }
 
         Map<StateFlag, StateFlag.State> flags = FlagConfigHelper.getFlagsForTrap(trapId);
         flags.forEach(region::setFlag);
 
         RegionManager rm = container.get(BukkitAdapter.adapt(location.getWorld()));
-        if (rm == null) return false;
+        if (rm == null) return null;
         rm.addRegion(region);
 
         UUID regionId = UUID.fromString(region.getId());
@@ -63,7 +63,7 @@ public class TrapRegionManager {
             }
         }.runTaskLater(VTrap.instance, duration * 20L);
 
-        return true;
+        return region;
     }
 
     public void deleteRegion(World world, UUID regionId, String trapId) {

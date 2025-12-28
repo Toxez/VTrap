@@ -40,6 +40,14 @@ traps:
     enchanted: false # будет ли предмет зачарован
     hide_enchants: true # скрывать ли зачар
     hide_attributes: true # скрывать ли атрибуты
+    # формат ЭФФЕКТ:УРОВЕНЬ:СЕКУНДЫ
+    # activator - тот кто активировал ее
+    # victims - те кто попали в трапку (ну кроме того кто активировал трапку)
+    effects:
+      - type: activator
+        effect: "SPEED:1:10, DAMAGE_RESISTANCE:0:5"
+      - type: victims
+        effect: "BLINDNESS:0:5, SLOW:1:5"
     flags: # флаги типо ФЛАГ: ну и тут или дени или алоу
       USE: DENY
       BLOCK_BREAK: DENY
@@ -64,6 +72,11 @@ traps:
     enchanted: false
     hide_enchants: true
     hide_attributes: true
+    effects:
+      - type: activator
+        effect: "WATER_BREATHING:0:20"
+      - type: victims
+        effect: "POISON:0:10, SLOW:2:5"
     flags:
       USE: DENY
       BLOCK_BREAK: DENY

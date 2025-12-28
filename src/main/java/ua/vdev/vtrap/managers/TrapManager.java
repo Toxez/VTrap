@@ -3,6 +3,7 @@ package ua.vdev.vtrap.managers;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,10 +19,12 @@ import java.util.UUID;
 public class TrapManager {
     private final Map<UUID, Map<String, Long>> playerCooldowns = new HashMap<>();
     private final TrapRegionManager regionManager;
+    private final TrapEffectManager effectManager;
     private final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 
-    public TrapManager(TrapRegionManager regionManager) {
+    public TrapManager(TrapRegionManager regionManager, TrapEffectManager effectManager) {
         this.regionManager = regionManager;
+        this.effectManager = effectManager;
     }
 
     public boolean canActivateTrap(Player player, Trap trap) {
@@ -50,9 +53,15 @@ public class TrapManager {
 
     public boolean activateTrap(Player player, Trap trap) {
         Location loc = player.getLocation();
-        if (!regionManager.createRegion(loc, trap.id())) return false;
+
+        ProtectedCuboidRegion region = regionManager.createRegion(loc, trap.id());
+
+        if (region == null) return false;
 
         if (new SchematicUtil(trap.timing().duration()).spawnSchematic(loc, trap.schematic())) {
+
+            effectManager.applyEffects(player, trap, region);
+
             playerCooldowns
                     .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
                     .put(trap.id(), System.currentTimeMillis());

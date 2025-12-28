@@ -3,6 +3,7 @@ package ua.vdev.vtrap;
 import org.bukkit.plugin.java.JavaPlugin;
 import ua.vdev.vtrap.commands.VTrapCommand;
 import ua.vdev.vtrap.listeners.TrapInteractListener;
+import ua.vdev.vtrap.managers.TrapEffectManager; // Import
 import ua.vdev.vtrap.managers.TrapRegionManager;
 import ua.vdev.vtrap.managers.TrapManager;
 
@@ -19,7 +20,10 @@ public final class VTrap extends JavaPlugin {
         saveDefaultConfig();
 
         regionManager = new TrapRegionManager();
-        TrapManager trapManager = new TrapManager(regionManager);
+        TrapEffectManager effectManager = new TrapEffectManager();
+
+        TrapManager trapManager = new TrapManager(regionManager, effectManager);
+
         getServer().getPluginManager().registerEvents(new TrapInteractListener(trapManager), this);
         getCommand("vtrap").setExecutor(new VTrapCommand());
         getCommand("vtrap").setTabCompleter(new VTrapCommand());
